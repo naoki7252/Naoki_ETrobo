@@ -2,14 +2,19 @@
 #define ETRC22_STATE_MANAGER_H_
 
 #include "driving.h"
+#include "etrc_info.h"
+#include "info_type.h"
 
 class StateManager {
  public:
-  StateManager(WheelsControl* wheels_control);
+  StateManager(WheelsControl* wheels_control, Luminous* luminous);
+  void TimeAttack();
   void TestRun();
-  int loopCount = 0;
+  //char str[264];
+  Hsv curr_hsv;
  private:
   WheelsControl* wheels_control_;
+  Luminous* luminous_;
 
 };
 

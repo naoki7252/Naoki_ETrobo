@@ -1,20 +1,18 @@
 #include "state_manager.h"
 
 
-StateManager::StateManager(WheelsControl* wheels_control) : wheels_control_(wheels_control){
+StateManager::StateManager(WheelsControl* wheels_control, Luminous* luminous) : wheels_control_(wheels_control), luminous_(luminous) {
+}
+
+
+void StateManager::TimeAttack() {
+  curr_hsv = luminous_->hsv_;
+  //sprintf(str, "H: %f, S: %f, V: %f\n ", val.h, val.s, val.v);
+  //syslog(LOG_NOTICE, str);
+
+  wheels_control_->LineTrace(curr_hsv);
 }
 
 void StateManager::TestRun() {
-  int8_t power = 50;
-  loopCount += 1;
-  if (loopCount < 300) {
-    wheels_control_->GoStraight(power);
-  } else if (loopCount >= 300 && loopCount < 600) {
-    wheels_control_->GoBackStraight(power);
-  } else if (loopCount >= 600 && loopCount < 900) {
-    wheels_control_->TurnLeft();
-  } else {
-    wheels_control_->Stop();
-  }
 }
 

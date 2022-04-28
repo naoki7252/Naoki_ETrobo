@@ -3,12 +3,14 @@
 
 #include "device_io.h"
 #include "etrc_info.h"
+#include "info_type.h"
 #include "utils.h"
 
 class WheelsControl {
  public:
   WheelsControl(MotorIo* motor_io);
   void Exec(int8_t target_power_l, int8_t target_power_r);
+  void LineTrace(Hsv curr_hsv);
   void GoStraight(int8_t power);
   void GoBackStraight(int8_t power);
   void TurnLeft();

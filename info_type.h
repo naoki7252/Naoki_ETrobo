@@ -12,6 +12,12 @@ enum Color {
   kColorNum
 };
 
+struct Rgb {
+  uint8_t r;
+  uint8_t g;
+  uint8_t b;
+};
+
 struct Hsv {
   float h;
   float s;

@@ -30,7 +30,7 @@ static void initialize() {
   luminous = new Luminous(sensor_io);
   localize = new Localize(motor_io);
   wheels_control = new WheelsControl(motor_io);
-  state_manager = new StateManager(wheels_control);
+  state_manager = new StateManager(wheels_control, luminous);
 }
 
 static void finalize() {
@@ -58,7 +58,7 @@ void main_task(intptr_t unused) {
   tslp_tsk(10*1000U);
 
   while (true) {
-    if (sensor_io->back_button_pressed_) break;
+    if (sensor_io->touch_sensor_pressed_) break;
     tslp_tsk(100*1000U);
   }
 
@@ -69,7 +69,7 @@ void main_task(intptr_t unused) {
 }
 
 void exec_action_task(intptr_t unused) {
-  state_manager->TestRun();
+  state_manager->TimeAttack();
   ext_tsk();
 }
 

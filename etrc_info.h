@@ -10,10 +10,12 @@ class Luminous {
   Luminous(SensorIo* sensor_io);
   void Update();
   Color color_;
+  Rgb rgb_;
   Hsv hsv_;
 
  private:
   void SetColorReference(Color c, Hsv hsv);
+  void UpdateRgb();
   void UpdateHsv();
   void UpdateColor();
   SensorIo* sensor_io_;
