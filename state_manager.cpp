@@ -28,6 +28,10 @@ void StateManager::TimeAttack() {
   //syslog(LOG_NOTICE, str);
 
   wheels_control_->LineTrace(curr_hsv);
+  // driving_manager_->Update();
+  // if (driving_manager_->DrivingParamsEmpty()) {
+  //   state_ = kGetBonus;
+  // }
 }
 
 

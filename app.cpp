@@ -3,25 +3,16 @@
 #include "device_io.h"
 #include "etrc_info.h"
 #include "driving.h"
+#include "game_play.h"
 #include "state_manager.h"
 
-#if defined(MAKE_SIM)
-static const bool kSimulator = true;
-#else
-static const bool kSimulator = false;
-#endif
-
-#if defined(MAKE_RIGHT)
-static const bool kRcourse = true;
-#else
-static const bool kRcourse = false;
-#endif
 
 MotorIo* motor_io;
 SensorIo* sensor_io;
 Luminous* luminous;
 Localize* localize;
 WheelsControl* wheels_control;
+BingoAgent* bingo_agent;
 StateManager* state_manager;
 
 static void initialize() {
@@ -30,11 +21,13 @@ static void initialize() {
   luminous = new Luminous(sensor_io);
   localize = new Localize(motor_io);
   wheels_control = new WheelsControl(motor_io);
+  bingo_agent = new BingoAgent();
   state_manager = new StateManager(wheels_control, luminous);
 }
 
 static void finalize() {
   delete state_manager;
+  delete bingo_agent;
   delete wheels_control;
   delete localize;
   delete luminous;
@@ -51,7 +44,7 @@ void main_task(intptr_t unused) {
     if (sensor_io->touch_sensor_pressed_) break;
     tslp_tsk(10*1000U);
   }
-  tslp_tsk(3000*1000U);
+  // tslp_tsk(3000*1000U);
 
   sta_cyc(EXEC_ACTION_CYC);
 

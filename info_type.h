@@ -1,6 +1,8 @@
 #ifndef ETRC22_INFO_TYPE_H_
 #define ETRC22_INFO_TYPE_H_
 
+#include "ev3api.h"
+
 enum Color {
   kGreen = 0,
   kBlack,
