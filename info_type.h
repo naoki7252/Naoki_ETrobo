@@ -3,17 +3,6 @@
 
 #include "ev3api.h"
 
-enum Color {
-  kGreen = 0,
-  kBlack,
-  kRed,
-  kYellow,
-  kBlue,
-  kWhite,
-  kInvalidColor,
-  kColorNum
-};
-
 struct Rgb {
   uint8_t r;
   uint8_t g;
@@ -26,10 +15,52 @@ struct Hsv {
   float v;
 };
 
+enum Color {
+  kGreen = 0,
+  kBlack,
+  kRed,
+  kYellow,
+  kBlue,
+  kWhite,
+  kInvalidColor,
+  kColorNum
+};
+
+enum Move {
+  kTraceLeftEdge = 0,
+  kTraceRightEdge,
+  kGoForward,
+  kGoBackward,
+  kRotateLeft,
+  kRotateRight,
+  kInvalidMove,
+  kMoveNum
+};
+
 struct Gain {
   float kp;
   float ki;
   float kd;
+};
+
+enum End {
+  kColorEnd = 0,
+  kDistanceEnd,
+  kThetaEnd,
+  kIvalidEnd,
+  kEndNum
+};
+
+struct DrivingParam {
+  Move move_type;
+  int8_t ref_power;
+  float ref_value;
+  Gain gain;
+  End end_type;
+  Color end_color;
+  float end_threshold;
+  bool is_started;
+  bool is_finished;
 };
 
 #endif  // ETRC22_INFO_TYPE_H_
