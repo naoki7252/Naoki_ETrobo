@@ -1,8 +1,34 @@
 #include "state_manager.h"
 
+const int kLcourseParamsNum = 5;
+const DrivingParam kLcourseParams[kLcourseParamsNum] = {
+  { kTraceRightEdge, 30, 50, { 0.4, 0, 0.05 }, kDistanceEnd, kInvalidColor, 6400 },
+  { kGoForward, 10, 0, { }, kDistanceEnd, kInvalidColor, 300 },
+  { kTraceRightEdge, 30, 50, { 0.4, 0, 0.05 }, kDistanceEnd, kInvalidColor, 800 },
+  { kGoForward, 10, 0, { }, kDistanceEnd, kInvalidColor, 300 },
+  { kTraceRightEdge, 30, 50, { 0.4, 0, 0.05 }, kColorEnd, kYellow, 0 },
+};
 
-StateManager::StateManager(WheelsControl* wheels_control, Luminous* luminous)
-    : wheels_control_(wheels_control), luminous_(luminous), state_(kTimeAttack) {
+const int kRcourseParamsNum = 5;
+const DrivingParam kRcourseParams[kRcourseParamsNum] = {
+  { kTraceLeftEdge, 30, 50, { 0.4, 0, 0.05 }, kDistanceEnd, kInvalidColor, 6400 },
+  { kGoForward, 10, 0, { }, kDistanceEnd, kInvalidColor, 300 },
+};
+
+StateManager::StateManager(DrivingManager* driving_manager, BingoAgent* bingo_agent)
+    // : driving_manager_(driving_manager), bingo_agent_(bingo_agent), state_(kTimeAttack) {
+    : driving_manager_(driving_manager), bingo_agent_(bingo_agent), state_(kTestRun) {
+  
+  bool is_Rcourse_ = false;
+  if (is_Rcourse_) {
+    for (int i = 0; i < kRcourseParamsNum; ++i) {
+      driving_manager_->AddDrivingParam(kRcourseParams[i]);
+    }
+  } else {
+    for (int i = 0; i < kLcourseParamsNum; ++i) {
+      driving_manager_->AddDrivingParam(kLcourseParams[i]);
+    }
+  }
 }
 
 
@@ -16,6 +42,10 @@ void StateManager::Update() {
       GetBonus();
       break;
 
+    case kTestRun:
+      TestRun();
+      break;
+
     default:
       break;
   }
@@ -23,15 +53,10 @@ void StateManager::Update() {
 
 
 void StateManager::TimeAttack() {
-  curr_hsv = luminous_->hsv_;
-  //sprintf(str, "H: %f, S: %f, V: %f\n ", val.h, val.s, val.v);
-  //syslog(LOG_NOTICE, str);
-
-  wheels_control_->LineTrace(curr_hsv);
-  // driving_manager_->Update();
-  // if (driving_manager_->DrivingParamsEmpty()) {
-  //   state_ = kGetBonus;
-  // }
+  driving_manager_->Update();
+  if (driving_manager_->DrivingParamsEmpty()) {
+    state_ = kGetBonus;
+  }
 }
 
 
@@ -39,5 +64,9 @@ void StateManager::GetBonus() {
 }
 
 void StateManager::TestRun() {
+  driving_manager_->Update();
+  // if (driving_manager_->DrivingParamsEmpty()) {
+  //   state_ = kGetBonus;
+  // }
 }
 

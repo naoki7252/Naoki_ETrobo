@@ -1,17 +1,19 @@
 #ifndef ETRC22_STATE_MANAGER_H_
 #define ETRC22_STATE_MANAGER_H_
 
-#include "driving.h"
+#include "driving_manager.h"
+#include "game_play.h"
 
 enum State {
   kTimeAttack = 0,
   kGetBonus,
+  kTestRun,
   kStateNum
 };
 
 class StateManager {
  public:
-  StateManager(WheelsControl* wheels_control, Luminous* luminous);
+  StateManager(DrivingManager* driving_manager, BingoAgent* bingo_agent);
   void Update();
   
   //char str[264];
@@ -20,8 +22,8 @@ class StateManager {
   void TimeAttack();
   void GetBonus();
   void TestRun();
-  WheelsControl* wheels_control_;
-  Luminous* luminous_;
+  DrivingManager* driving_manager_;
+  BingoAgent* bingo_agent_;
   State state_;
 };
 
