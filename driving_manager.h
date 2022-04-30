@@ -16,7 +16,7 @@ class DrivingManager {
   bool DrivingParamsEmpty();
 
  private:
-  void SetMoveParam(DrivingParam& param);
+  void SetDriveParam(DrivingParam& param);
   void SetEndParam(DrivingParam& param);
   void Drive(DrivingParam& param);
   BasicDriver* basic_driver_;

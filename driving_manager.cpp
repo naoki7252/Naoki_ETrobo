@@ -10,13 +10,15 @@ void DrivingManager::Update() {
   }
 
   DrivingParam& curr_param = driving_params_.front();
+
   if (!curr_param.is_started) {
-    SetMoveParam(curr_param);
+    SetDriveParam(curr_param);
     SetEndParam(curr_param);
     curr_param.is_started = true;
   }
 
   Drive(curr_param);
+  
   if (end_condition_->IsSatisfied()) {
     driving_params_.pop_front();
   }
@@ -34,23 +36,22 @@ bool DrivingManager::DrivingParamsEmpty() {
   return driving_params_.empty();
 }
 
-void DrivingManager::SetMoveParam(DrivingParam& param) {
+void DrivingManager::SetDriveParam(DrivingParam& param) {
   Move move_type = param.move_type;
-  int8_t ref_power = param.ref_power;
-  float ref_value = param.ref_value;
+  int8_t base_power = param.base_power;
   Gain gain = param.gain;
 
   switch (move_type) {
     case kTraceLeftEdge:
     case kTraceRightEdge:
-      line_tracer_->SetParam(move_type, ref_power, ref_value, gain);
+      line_tracer_->SetParam(move_type, base_power, gain);
       break;
 
     case kGoForward:
     case kGoBackward:
     case kRotateLeft:
     case kRotateRight:
-      basic_driver_->SetParam(move_type, ref_power);
+      basic_driver_->SetParam(move_type, base_power);
       break;
 
     default:
