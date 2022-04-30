@@ -8,7 +8,6 @@
 #include "game_play.h"
 #include "state_manager.h"
 
-
 MotorIo* motor_io;
 SensorIo* sensor_io;
 Luminous* luminous;

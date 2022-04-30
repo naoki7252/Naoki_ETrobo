@@ -5,6 +5,7 @@ DrivingManager::DrivingManager(BasicDriver* basic_driver, LineTracer* line_trace
 }
 
 void DrivingManager::Update() {
+  /*
   if (driving_params_.size() <= 0) {
     return;
   }
@@ -18,22 +19,23 @@ void DrivingManager::Update() {
   }
 
   Drive(curr_param);
-  
+
   if (end_condition_->IsSatisfied()) {
     driving_params_.pop_front();
   }
 
   if (driving_params_.empty()) {
     basic_driver_->Stop();
-  }
+  }*/
 }
 
 void DrivingManager::AddDrivingParam(DrivingParam param) {
-  driving_params_.push_back(param);
+  //driving_params_.push_back(param);
 }
 
 bool DrivingManager::DrivingParamsEmpty() {
-  return driving_params_.empty();
+  //return driving_params_.empty();
+  return false;
 }
 
 void DrivingManager::SetDriveParam(DrivingParam& param) {
