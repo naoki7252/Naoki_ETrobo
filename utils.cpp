@@ -13,7 +13,7 @@ void PidControl::SetGain(float kp, float ki, float kd) {
 }
 
 float PidControl::CalcMv(float target_val, float current_val) {
-  float mv = 1.0;
+  float mv = kp_ * (target_val - current_val);
 
   return mv;
 }
