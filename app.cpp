@@ -2,7 +2,9 @@
 
 #include "device_io.h"
 #include "etrc_info.h"
-#include "driving.h"
+#include "driving_type.h"
+#include "end_condition.h"
+#include "driving_manager.h"
 #include "game_play.h"
 #include "state_manager.h"
 
@@ -12,6 +14,10 @@ SensorIo* sensor_io;
 Luminous* luminous;
 Localize* localize;
 WheelsControl* wheels_control;
+BasicDriver* basic_driver;
+LineTracer* line_tracer;
+EndCondition* end_condition;
+DrivingManager* driving_manager;
 BingoAgent* bingo_agent;
 StateManager* state_manager;
 
@@ -21,13 +27,21 @@ static void initialize() {
   luminous = new Luminous(sensor_io);
   localize = new Localize(motor_io);
   wheels_control = new WheelsControl(motor_io);
+  basic_driver = new BasicDriver(wheels_control);
+  line_tracer = new LineTracer(wheels_control, luminous);
+  end_condition = new EndCondition(luminous, localize);
+  driving_manager = new DrivingManager(basic_driver, line_tracer, end_condition);
   bingo_agent = new BingoAgent();
-  state_manager = new StateManager(wheels_control, luminous);
+  state_manager = new StateManager(driving_manager, bingo_agent);
 }
 
 static void finalize() {
   delete state_manager;
   delete bingo_agent;
+  delete driving_manager;
+  delete end_condition;
+  delete line_tracer;
+  delete basic_driver;
   delete wheels_control;
   delete localize;
   delete luminous;
@@ -44,7 +58,7 @@ void main_task(intptr_t unused) {
     if (sensor_io->touch_sensor_pressed_) break;
     tslp_tsk(10*1000U);
   }
-  // tslp_tsk(3000*1000U);
+  tslp_tsk(500*1000U);
 
   sta_cyc(EXEC_ACTION_CYC);
 
