@@ -34,7 +34,6 @@ enum Move {
   kRotateLeft,
   kRotateRight,
   kInvalidMove,
-  kMoveNum
 };
 
 struct Gain {
@@ -48,7 +47,7 @@ enum End {
   kDistanceEnd,
   kThetaEnd,
   kIvalidEnd,
-  kEndNum
+  kInvalidEnd
 };
 
 struct DrivingParam {
