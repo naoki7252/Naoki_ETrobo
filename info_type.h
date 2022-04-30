@@ -52,14 +52,12 @@ enum End {
 
 struct DrivingParam {
   Move move_type;
-  int8_t ref_power;
-  float ref_value;
+  int8_t base_power;
   Gain gain;
   End end_type;
   Color end_color;
   float end_threshold;
   bool is_started;
-  bool is_finished;
 };
 
 #endif  // ETRC22_INFO_TYPE_H_
