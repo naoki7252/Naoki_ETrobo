@@ -14,6 +14,9 @@ extern "C" {
 #define EXEC_ACTION_DT_MS 10
 #define UPDATE_INFO_DT_MS 10
 #define SOLVE_BINGO_DT_MS 10
+#define TASK_INTERVAL_DT_MS 10
+#define START_INTERVAL_DT_MS 500
+
 
 #ifndef TOPPERS_MACRO_ONLY
 extern void main_task(intptr_t exinf);

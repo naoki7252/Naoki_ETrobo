@@ -56,13 +56,13 @@ void main_task(intptr_t unused) {
 
   while (true) {
     if (sensor_io->touch_sensor_pressed_) break;
-    tslp_tsk(10*1000U);
+    tslp_tsk(TASK_INTERVAL_DT_MS*1000U);
   }
-  tslp_tsk(500*1000U);
+  tslp_tsk(START_INTERVAL_DT_MS*1000U);
 
   sta_cyc(EXEC_ACTION_CYC);
 
-  tslp_tsk(10*1000U);
+  tslp_tsk(TASK_INTERVAL_DT_MS*1000U);
 
   while (true) {
     if (sensor_io->touch_sensor_pressed_) break;
