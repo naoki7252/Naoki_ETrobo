@@ -17,21 +17,21 @@ class BasicDriver {
  public:
   BasicDriver(WheelsControl* wheels_control);
   ~BasicDriver();
-  void SetParam(Move move_type, int8_t ref_power);
+  void SetParam(Move move_type, int8_t base_power);
   void Run();
   void Stop();
 
  private:
   WheelsControl* wheels_control_;
   Move move_type_;
-  int8_t ref_power_;
+  int8_t base_power_;
 };
 
 class LineTracer {
  public:
   LineTracer(WheelsControl* wheels_control, Luminous* luminous);
   ~LineTracer();
-  void SetParam(Move move_type, int8_t ref_power, float ref_value, Gain gain);
+  void SetParam(Move move_type, int8_t base_power, Gain gain);
   void Run();
   void Stop();
 
@@ -39,8 +39,8 @@ class LineTracer {
   WheelsControl* wheels_control_;
   Luminous* luminous_;
   Move move_type_;
-  int8_t ref_power_;
-  float ref_value_;
+  int8_t base_power_;
+  const int8_t line_trace_threshold = 40;
   PidControl* pid_control_;
 };
 
