@@ -1,18 +1,17 @@
 #include "state_manager.h"
 
-const int kLcourseParamsNum = 5;
+int8_t baseMotorPower = 50;
+const int lineTraceThreshold = 40;
+
+const int kLcourseParamsNum = 1;
 const DrivingParam kLcourseParams[kLcourseParamsNum] = {
-  { kTraceRightEdge, 30, 50, { 0.4, 0, 0.05 }, kDistanceEnd, kInvalidColor, 6400 },
-  { kGoForward, 10, 0, { }, kDistanceEnd, kInvalidColor, 300 },
-  { kTraceRightEdge, 30, 50, { 0.4, 0, 0.05 }, kDistanceEnd, kInvalidColor, 800 },
-  { kGoForward, 10, 0, { }, kDistanceEnd, kInvalidColor, 300 },
-  { kTraceRightEdge, 30, 50, { 0.4, 0, 0.05 }, kColorEnd, kYellow, 0 },
+  { kTraceRightEdge, baseMotorPower, { 0.5, 0, 0 }, kDistanceEnd, kInvalidColor, 1000, false},
 };
 
 const int kRcourseParamsNum = 5;
 const DrivingParam kRcourseParams[kRcourseParamsNum] = {
-  { kTraceLeftEdge, 30, 50, { 0.4, 0, 0.05 }, kDistanceEnd, kInvalidColor, 6400 },
-  { kGoForward, 10, 0, { }, kDistanceEnd, kInvalidColor, 300 },
+  { kTraceLeftEdge, 30, { 0.5, 0, 0 }, kDistanceEnd, kInvalidColor, 6400 },
+  { kGoForward, 10, { }, kDistanceEnd, kInvalidColor, 300 },
 };
 
 StateManager::StateManager(DrivingManager* driving_manager, BingoAgent* bingo_agent)
@@ -61,6 +60,7 @@ void StateManager::TimeAttack() {
 
 
 void StateManager::GetBonus() {
+  driving_manager_->Update();
 }
 
 void StateManager::TestRun() {
