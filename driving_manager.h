@@ -6,7 +6,7 @@
 #include "info_type.h"
 #include "utils.h"
 
-#include <list>
+//#include <list>
 
 class DrivingManager {
  public:
@@ -22,7 +22,7 @@ class DrivingManager {
   BasicDriver* basic_driver_;
   LineTracer* line_tracer_;
   EndCondition* end_condition_;
-  std::list<DrivingParam> driving_params_;
+  //std::list<DrivingParam> driving_params_;
 };
 
 #endif  // ETRC22_DRIVING_MANAGER_H_
