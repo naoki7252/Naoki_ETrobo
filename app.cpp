@@ -11,6 +11,7 @@
 
 MotorIo* motor_io;
 SensorIo* sensor_io;
+Camera* camera;
 Luminous* luminous;
 Localize* localize;
 WheelsControl* wheels_control;
@@ -24,6 +25,7 @@ StateManager* state_manager;
 static void initialize() {
   motor_io = new MotorIo();
   sensor_io = new SensorIo();
+  camera = new Camera();
   luminous = new Luminous(sensor_io);
   localize = new Localize(motor_io);
   wheels_control = new WheelsControl(motor_io);
@@ -45,6 +47,7 @@ static void finalize() {
   delete wheels_control;
   delete localize;
   delete luminous;
+  delete camera;
   delete sensor_io;
   delete motor_io;
 }
@@ -84,6 +87,7 @@ void update_info_task(intptr_t unused) {
   motor_io->Update();
   sensor_io->Update();
   luminous->Update();
+  camera->Update();
 
   ext_tsk();
 }

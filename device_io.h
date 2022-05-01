@@ -33,4 +33,11 @@ class SensorIo {
   rgb_raw_t color_rgb_raw_;
 };
 
+class Camera {
+ public:
+  Camera();
+  ~Camera();
+  void Update();
+};
+
 #endif  // ETRC22_DEVICE_IO_H_

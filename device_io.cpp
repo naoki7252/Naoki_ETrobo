@@ -74,3 +74,13 @@ void SensorIo::Update() {
   //back_button_pressed_ = ev3_button_is_pressed(BACK_BUTTON);
   ev3_color_sensor_get_rgb_raw(EV3_PORT_2, &color_rgb_raw_);
 }
+
+Camera::Camera() {
+
+}
+
+Camera::~Camera() {
+}
+
+void Camera::Update() {
+}
