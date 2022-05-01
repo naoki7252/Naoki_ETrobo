@@ -17,7 +17,7 @@ const DrivingParam kRcourseParams[kRcourseParamsNum] = {
 StateManager::StateManager(DrivingManager* driving_manager, BingoAgent* bingo_agent)
     : driving_manager_(driving_manager), bingo_agent_(bingo_agent), state_(kTestRun) {
 
-  bool is_Rcourse_ = false;
+  // bool is_Rcourse_ = false;
   /*
   if (is_Rcourse_) {
     for (int i = 0; i < kRcourseParamsNum; ++i) {
