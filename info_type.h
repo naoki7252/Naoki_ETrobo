@@ -46,7 +46,6 @@ enum End {
   kColorEnd = 0,
   kDistanceEnd,
   kThetaEnd,
-  kIvalidEnd,
   kInvalidEnd
 };
 
