@@ -5,40 +5,25 @@ DrivingManager::DrivingManager(BasicDriver* basic_driver, LineTracer* line_trace
 }
 
 void DrivingManager::Update() {
-  /*
-  if (driving_params_.size() <= 0) {
+  if (is_satisfied) {
+    is_satisfied = false;
     return;
-  }
-
-  DrivingParam& curr_param = driving_params_.front();
-
-  if (!curr_param.is_started) {
-    SetDriveParam(curr_param);
-    SetEndParam(curr_param);
-    curr_param.is_started = true;
   }
 
   Drive(curr_param);
 
   if (end_condition_->IsSatisfied()) {
-    driving_params_.pop_front();
+    is_satisfied = true;
   }
-
-  if (driving_params_.empty()) {
-    basic_driver_->Stop();
-  }*/
 }
 
-void DrivingManager::AddDrivingParam(DrivingParam param) {
-  //driving_params_.push_back(param);
+void DrivingManager::SetDriveParam(DrivingParam param) {
+  curr_param = param;
+  SetMoveParam(curr_param);
+  SetEndParam(curr_param);
 }
 
-bool DrivingManager::DrivingParamsEmpty() {
-  //return driving_params_.empty();
-  return false;
-}
-
-void DrivingManager::SetDriveParam(DrivingParam& param) {
+void DrivingManager::SetMoveParam(DrivingParam& param) {
   Move move_type = param.move_type;
   int8_t base_power = param.base_power;
   Gain gain = param.gain;

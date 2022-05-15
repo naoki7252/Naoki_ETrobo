@@ -8,6 +8,8 @@
 #include "game_play.h"
 #include "state_manager.h"
 
+static const bool kLcourse = true;
+
 MotorIo* motor_io;
 SensorIo* sensor_io;
 Camera* camera;
@@ -18,6 +20,8 @@ BasicDriver* basic_driver;
 LineTracer* line_tracer;
 EndCondition* end_condition;
 DrivingManager* driving_manager;
+TimeAttacker* time_attacker;
+BonusGetter* bonus_getter;
 BingoAgent* bingo_agent;
 StateManager* state_manager;
 
@@ -32,13 +36,17 @@ static void initialize() {
   line_tracer = new LineTracer(wheels_control, luminous);
   end_condition = new EndCondition(luminous, localize);
   driving_manager = new DrivingManager(basic_driver, line_tracer, end_condition);
+  time_attacker = new TimeAttacker(driving_manager, kLcourse);
+  bonus_getter = new BonusGetter(driving_manager, kLcourse);
   bingo_agent = new BingoAgent();
-  state_manager = new StateManager(driving_manager, bingo_agent);
+  state_manager = new StateManager(time_attacker, bonus_getter, bingo_agent);
 }
 
 static void finalize() {
   delete state_manager;
   delete bingo_agent;
+  delete bonus_getter;
+  delete time_attacker;
   delete driving_manager;
   delete end_condition;
   delete line_tracer;

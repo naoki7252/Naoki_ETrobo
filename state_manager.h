@@ -11,18 +11,39 @@ enum State {
   kStateNum
 };
 
+class TimeAttacker {
+ public:
+  TimeAttacker(DrivingManager* driving_manager, bool is_Lcourse);
+  void Update();
+  bool is_completed = false;
+ private:
+  void SetTimeAttackDriveParam(bool is_Lcourse);
+  DrivingManager* driving_manager_;
+  DrivingParam timeAttackDriveParams[100] = {};
+  int currParamIndex = 0;
+  int paramNum = 0;
+};
+
+class BonusGetter {
+ public:
+  BonusGetter(DrivingManager* driving_manager, bool is_Lcourse);
+  void Update();
+ private:
+  DrivingManager* driving_manager_;
+  bool is_Lcourse_;
+};
+
 class StateManager {
  public:
-  StateManager(DrivingManager* driving_manager, BingoAgent* bingo_agent);
+  StateManager(TimeAttacker* time_attacker, BonusGetter* bonus_getter, BingoAgent* bingo_agent);
   void Update();
   
-  //char str[264];
-  Hsv curr_hsv;
  private:
   void TimeAttack();
   void GetBonus();
   void TestRun();
-  DrivingManager* driving_manager_;
+  TimeAttacker* time_attacker_;
+  BonusGetter* bonus_getter_;
   BingoAgent* bingo_agent_;
   State state_;
 };

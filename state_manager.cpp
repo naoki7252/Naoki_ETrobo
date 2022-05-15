@@ -1,33 +1,66 @@
 #include "state_manager.h"
 
-int8_t baseMotorPower = 50;
-const int lineTraceThreshold = 40;
 
 const int kLcourseParamsNum = 1;
-const DrivingParam kLcourseParams[kLcourseParamsNum] = {
-  { kTraceRightEdge, baseMotorPower, { 0.5, 0, 0 }, kDistanceEnd, kInvalidColor, 1000, false},
+const DrivingParam kLcourseTimeAttackParams[kLcourseParamsNum] = {
+  { kTraceRightEdge, 50, { 0.5, 0, 0 }, kDistanceEnd, kInvalidColor, 1000, false, false},
 };
 
-const int kRcourseParamsNum = 5;
-const DrivingParam kRcourseParams[kRcourseParamsNum] = {
-  { kTraceLeftEdge, 30, { 0.5, 0, 0 }, kDistanceEnd, kInvalidColor, 6400 },
-  { kGoForward, 10, { }, kDistanceEnd, kInvalidColor, 300 },
+const int kRcourseParamsNum = 2;
+const DrivingParam kRcourseTimeAttackParams[kRcourseParamsNum] = {
+  { kTraceLeftEdge, 30, { 0.5, 0, 0 }, kDistanceEnd, kInvalidColor, 6400, false, false},
+  { kGoForward, 10, { }, kDistanceEnd, kInvalidColor, 300, false, false},
 };
 
-StateManager::StateManager(DrivingManager* driving_manager, BingoAgent* bingo_agent)
-    : driving_manager_(driving_manager), bingo_agent_(bingo_agent), state_(kTestRun) {
+TimeAttacker::TimeAttacker(DrivingManager* driving_manager, bool is_Lcourse) 
+    : driving_manager_(driving_manager) {
+  SetTimeAttackDriveParam(is_Lcourse);
+}
 
-  // bool is_Rcourse_ = false;
-  /*
-  if (is_Rcourse_) {
-    for (int i = 0; i < kRcourseParamsNum; ++i) {
-      driving_manager_->AddDrivingParam(kRcourseParams[i]);
+void TimeAttacker::SetTimeAttackDriveParam(bool is_Lcourse_) {
+  if (is_Lcourse_) {
+    paramNum = kLcourseParamsNum;
+
+    for (int i=0; i<paramNum; i++) {
+      timeAttackDriveParams[i] = kLcourseTimeAttackParams[i];
     }
   } else {
-    for (int i = 0; i < kLcourseParamsNum; ++i) {
-      driving_manager_->AddDrivingParam(kLcourseParams[i]);
+    paramNum = kRcourseParamsNum;
+
+    for (int i=0; i<paramNum; i++) {
+      timeAttackDriveParams[i] = kRcourseTimeAttackParams[i];
     }
-  }*/
+  }
+}
+
+void TimeAttacker::Update() {
+  DrivingParam& curr_param = timeAttackDriveParams[currParamIndex];
+  if (!curr_param.is_started) {
+    driving_manager_->SetDriveParam(curr_param);
+    curr_param.is_started = true;
+  }
+
+  driving_manager_->Update();
+
+  if (driving_manager_->is_satisfied) {
+    currParamIndex += 1;
+  }
+
+  if (currParamIndex >= paramNum) {
+    is_completed = true;
+  }
+}
+
+BonusGetter::BonusGetter(DrivingManager* driving_manager, bool is_Lcourse)
+    : driving_manager_(driving_manager), is_Lcourse_(is_Lcourse) {
+}
+
+void BonusGetter::Update() {
+
+}
+
+StateManager::StateManager(TimeAttacker* time_attacker, BonusGetter* bonus_getter, BingoAgent* bingo_agent)
+    : time_attacker_(time_attacker), bonus_getter_(bonus_getter), bingo_agent_(bingo_agent), state_(kTestRun) {
 }
 
 
@@ -50,21 +83,19 @@ void StateManager::Update() {
   }
 }
 
-
 void StateManager::TimeAttack() {
-  driving_manager_->Update();
-  if (driving_manager_->DrivingParamsEmpty()) {
+  time_attacker_->Update();
+  if (time_attacker_->is_completed) {
     state_ = kGetBonus;
   }
 }
 
-
 void StateManager::GetBonus() {
-  driving_manager_->Update();
+  bonus_getter_->Update();
 }
 
 void StateManager::TestRun() {
-  driving_manager_->Update();
+  // driving_manager_->Update();
   // if (driving_manager_->DrivingParamsEmpty()) {
   //   state_ = kGetBonus;
   // }
