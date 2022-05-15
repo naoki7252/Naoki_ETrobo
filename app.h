@@ -22,6 +22,7 @@ extern "C" {
 extern void main_task(intptr_t exinf);
 extern void exec_action_task(intptr_t exinf);
 extern void update_info_task(intptr_t exinf);
+extern void solve_bingo_task(intptr_t exinf);
 #endif
 
 #ifdef __cplusplus

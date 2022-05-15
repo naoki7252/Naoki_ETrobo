@@ -2,9 +2,8 @@
 
 #include "device_io.h"
 #include "etrc_info.h"
-#include "driving_type.h"
-#include "end_condition.h"
-#include "driving_manager.h"
+#include "driving.h"
+#include "test_runner.h"
 #include "game_play.h"
 #include "state_manager.h"
 
@@ -22,6 +21,7 @@ EndCondition* end_condition;
 DrivingManager* driving_manager;
 TimeAttacker* time_attacker;
 BonusGetter* bonus_getter;
+TestRunner* test_runner;
 BingoAgent* bingo_agent;
 StateManager* state_manager;
 
@@ -38,13 +38,15 @@ static void initialize() {
   driving_manager = new DrivingManager(basic_driver, line_tracer, end_condition);
   time_attacker = new TimeAttacker(driving_manager, kLcourse);
   bonus_getter = new BonusGetter(driving_manager, kLcourse);
-  bingo_agent = new BingoAgent();
-  state_manager = new StateManager(time_attacker, bonus_getter, bingo_agent);
+  test_runner = new TestRunner(driving_manager);
+  bingo_agent = new BingoAgent(kLcourse);
+  state_manager = new StateManager(time_attacker, bonus_getter, test_runner);
 }
 
 static void finalize() {
   delete state_manager;
   delete bingo_agent;
+  delete test_runner;
   delete bonus_getter;
   delete time_attacker;
   delete driving_manager;
@@ -95,6 +97,10 @@ void update_info_task(intptr_t unused) {
   sensor_io->Update();
   luminous->Update();
   camera->Update();
+  ext_tsk();
+}
 
+void solve_bingo_task(intptr_t unused) {
+  bingo_agent->SolveBingo();
   ext_tsk();
 }

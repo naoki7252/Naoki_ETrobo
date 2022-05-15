@@ -1,8 +1,8 @@
 #ifndef ETRC22_STATE_MANAGER_H_
 #define ETRC22_STATE_MANAGER_H_
 
-#include "driving_manager.h"
-#include "game_play.h"
+#include "driving.h"
+#include "test_runner.h"
 
 enum State {
   kTimeAttack = 0,
@@ -20,8 +20,8 @@ class TimeAttacker {
   void SetTimeAttackDriveParam(bool is_Lcourse);
   DrivingManager* driving_manager_;
   DrivingParam timeAttackDriveParams[100] = {};
-  int currParamIndex = 0;
-  int paramNum = 0;
+  int8_t currParamIndex = 0;
+  int8_t paramNum = 0;
 };
 
 class BonusGetter {
@@ -30,12 +30,11 @@ class BonusGetter {
   void Update();
  private:
   DrivingManager* driving_manager_;
-  bool is_Lcourse_;
 };
 
 class StateManager {
  public:
-  StateManager(TimeAttacker* time_attacker, BonusGetter* bonus_getter, BingoAgent* bingo_agent);
+  StateManager(TimeAttacker* time_attacker, BonusGetter* bonus_getter, TestRunner* test_runner);
   void Update();
   
  private:
@@ -44,7 +43,7 @@ class StateManager {
   void TestRun();
   TimeAttacker* time_attacker_;
   BonusGetter* bonus_getter_;
-  BingoAgent* bingo_agent_;
+  TestRunner* test_runner_;
   State state_;
 };
 

@@ -1,7 +1,10 @@
 #include "game_play.h"
 
-BingoAgent::BingoAgent() {
+BingoAgent::BingoAgent(bool kLcourse) {
 }
 
 BingoAgent::~BingoAgent() {
+}
+
+void BingoAgent::SolveBingo() {
 }
