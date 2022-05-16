@@ -2,13 +2,13 @@
 
 const int kLcourseParamsNum = 1;
 const DrivingParam kLcourseTimeAttackParams[kLcourseParamsNum] = {
-  { kTraceRightEdge, 50, { 0.5, 0, 0 }, kDistanceEnd, kInvalidColor, 1000, false, false},
+  { kTraceRightEdge, 50, { 0.5, 0, 0 }, kDistanceEnd, kInvalidColor, 1000, false},
 };
 
 const int kRcourseParamsNum = 2;
 const DrivingParam kRcourseTimeAttackParams[kRcourseParamsNum] = {
-  { kTraceLeftEdge, 30, { 0.5, 0, 0 }, kDistanceEnd, kInvalidColor, 6400, false, false},
-  { kGoForward, 10, { }, kDistanceEnd, kInvalidColor, 300, false, false},
+  { kTraceLeftEdge, 30, { 0.5, 0, 0 }, kDistanceEnd, kInvalidColor, 6400, false},
+  { kGoForward, 10, { }, kDistanceEnd, kInvalidColor, 300, false},
 };
 
 TimeAttacker::TimeAttacker(DrivingManager* driving_manager, bool is_Lcourse) 

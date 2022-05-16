@@ -213,6 +213,10 @@ void DrivingManager::Drive(DrivingParam& param) {
       basic_driver_->Run();
       break;
 
+    case kStopWheels:
+      basic_driver_->Stop();
+      break;
+
     default:
       break;
   }

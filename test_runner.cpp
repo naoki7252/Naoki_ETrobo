@@ -1,8 +1,9 @@
 #include "test_runner.h"
 
-const int kTtestRunParamsNum = 1;
+const int kTtestRunParamsNum = 2;
 const DrivingParam kTestRunParams[kTtestRunParamsNum] = {
-  { kTraceRightEdge, 50, { 0.5, 0, 0 }, kDistanceEnd, kInvalidColor, 1000, false, false},
+  { kTraceRightEdge, 50, { 0.5, 0, 0 }, kDistanceEnd, kInvalidColor, 1000, false},
+  { kStopWheels, 0, { 0, 0, 0 }, kInvalidEnd, kInvalidColor, 0, false},
 };
 
 
