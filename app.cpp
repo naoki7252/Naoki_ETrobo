@@ -29,7 +29,7 @@ static void initialize() {
   motor_io = new MotorIo();
   sensor_io = new SensorIo();
   camera = new Camera();
-  luminous = new Luminous(sensor_io);
+  luminous = new Luminous(sensor_io, camera);
   localize = new Localize(motor_io);
   wheels_control = new WheelsControl(motor_io);
   basic_driver = new BasicDriver(wheels_control);

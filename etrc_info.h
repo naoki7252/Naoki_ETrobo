@@ -7,7 +7,7 @@
 
 class Luminous {
  public:
-  Luminous(SensorIo* sensor_io);
+  Luminous(SensorIo* sensor_io, Camera* camera);
   void Update();
   Color color_;
   Rgb rgb_;
@@ -19,6 +19,7 @@ class Luminous {
   void UpdateHsv();
   void UpdateColor();
   SensorIo* sensor_io_;
+  Camera* camera_;
   Hsv color_ref_[kColorNum];
 };
 
