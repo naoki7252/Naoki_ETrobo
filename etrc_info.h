@@ -27,10 +27,15 @@ class Localize {
  public:
   Localize(MotorIo* motor_io);
   void Update();
+  void SaveOdometri();
   // double distance_;
 
  private:
   MotorIo* motor_io_;
+  int32_t counts_rs[100000] = {};
+  int32_t counts_ls[100000] = {};
+  int curr_index = 0;
+
 };
 
 #endif  // ETRC22_ETRC_INFO_H_

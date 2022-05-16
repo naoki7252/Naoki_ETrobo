@@ -79,4 +79,27 @@ Localize::Localize(MotorIo* motor_io)
 }
 
 void Localize::Update() {
+  int32_t counts_r_ = motor_io_->counts_r_;
+  int32_t counts_l_ = motor_io_->counts_l_;
+
+  // if(counts_l_ > 50 && counts_r_ > 50) {
+  //   counts_l_=0;
+  //   counts_r_=0;
+  // }
+
+  counts_rs[curr_index] = counts_r_;
+  counts_ls[curr_index] = counts_l_;
+  curr_index += 1;
+}
+
+void Localize::SaveOdometri() {
+  char str [256];
+  FILE* fp = fopen("Odome.csv", "w");
+
+  for (int i=0; i<curr_index; i++) {
+    sprintf(str, "%d, %d\n", counts_ls[i], counts_rs[i]);
+    fprintf(fp, str);
+  }
+
+  fclose(fp);
 }
