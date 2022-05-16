@@ -149,7 +149,6 @@ DrivingManager::DrivingManager(BasicDriver* basic_driver, LineTracer* line_trace
 
 void DrivingManager::Update() {
   if (is_satisfied) {
-    is_satisfied = false;
     return;
   }
 
@@ -161,6 +160,7 @@ void DrivingManager::Update() {
 }
 
 void DrivingManager::SetDriveParam(DrivingParam param) {
+  is_satisfied = false;
   curr_param = param;
   SetMoveParam(curr_param);
   SetEndParam(curr_param);
