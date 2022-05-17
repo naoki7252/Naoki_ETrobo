@@ -80,18 +80,18 @@ void LineTracer::SetParam(Move move_type, int8_t base_power, Gain gain) {
 }
 
 void LineTracer::Run() {
-  // float curr_hsv = luminous_->hsv_.v;
-  // float mv = pid_control_->CalcMv(line_trace_threshold, curr_hsv);
+  float curr_hsv = luminous_->hsv_.v;
+  float mv = pid_control_->CalcMv(line_trace_threshold, curr_hsv);
 
-  // if (move_type_ == kTraceLeftEdge) {
-  //   mv *= -1;
-  // }
+  if (move_type_ == kTraceLeftEdge) {
+    mv *= -1;
+  }
 
-  // int8_t power_l = static_cast<int8_t>(base_power_ + mv);
-  // int8_t power_r = static_cast<int8_t>(base_power_ - mv);
-  // wheels_control_->Exec(power_l, power_r);
+  int8_t power_l = static_cast<int8_t>(base_power_ + mv);
+  int8_t power_r = static_cast<int8_t>(base_power_ - mv);
+  wheels_control_->Exec(power_l, power_r);
 
-  wheels_control_->Exec(50, 50);
+  // wheels_control_->Exec(50, 50);
 }
 
 void LineTracer::Stop() {
