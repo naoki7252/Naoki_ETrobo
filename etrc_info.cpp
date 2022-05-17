@@ -87,12 +87,12 @@ void Localize::Update() {
   //   counts_r_=0;
   // }
 
+  curr_index += 1;
   counts_rs[curr_index] = counts_r_;
   counts_ls[curr_index] = counts_l_;
-  curr_index += 1;
 
-  double Ll = R * motor_io_->counts_l_ * M_PI / 180;
-  double Lr = R * motor_io_->counts_r_ * M_PI / 180;
+  double Ll = R * (counts_ls[curr_index] - counts_ls[curr_index - 1]) * M_PI / 180;
+  double Lr = R * (counts_rs[curr_index] - counts_rs[curr_index - 1]) * M_PI / 180;
 
   double theta = (Lr - Ll) / D;
   theta_wa += theta;
@@ -101,12 +101,12 @@ void Localize::Update() {
   double dy = A * sin(theta_wa + theta / 2);
   double dd = sqrt(dx * dx + dy * dy);
 
-  // x += dx;
-  // y += dy;
+  x += dx;
+  y += dy;
   distance_ += dd;
 
   char str[264];
-  sprintf(str, "distance: %f\n", distance_);
+  sprintf(str, "x: %f y: %f distance: %f\n", x, y, distance_);
   syslog(LOG_NOTICE, str);
 }
 
