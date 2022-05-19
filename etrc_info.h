@@ -35,8 +35,8 @@ class Localize {
   int32_t counts_rs[100000] = {};
   int32_t counts_ls[100000] = {};
   int curr_index = 0;
-  const int8_t R = 45;
-  const int8_t D = 126;
+  const float R = 49.75;
+  const int8_t D = 128;
   double theta_wa = 0;
   double x = 0;
   double y = 0;
