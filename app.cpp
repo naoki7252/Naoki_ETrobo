@@ -75,7 +75,10 @@ void main_task(intptr_t unused) {
   tslp_tsk(START_INTERVAL_DT_MS*1000U);
 
   sta_cyc(EXEC_ACTION_CYC);
-
+  // ER_UINT type = ev3_sensor_get_type(EV3_PORT_C);
+  // char str[264];
+  // sprintf(str, "type: %d\n", type);
+  // syslog(LOG_NOTICE, str);
   tslp_tsk(TASK_INTERVAL_DT_MS*1000U);
 
   while (true) {
@@ -91,7 +94,7 @@ void main_task(intptr_t unused) {
 }
 
 void exec_action_task(intptr_t unused) {
-  // state_manager->Update();
+  state_manager->Update();
   // motor_io->Rotate();
   localize->Update();
   ext_tsk();

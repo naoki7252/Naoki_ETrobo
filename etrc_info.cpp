@@ -94,11 +94,12 @@ void Localize::Update() {
   double Ll = R * (counts_ls[curr_index] - counts_ls[curr_index - 1]) * M_PI / 180;
   double Lr = R * (counts_rs[curr_index] - counts_rs[curr_index - 1]) * M_PI / 180;
 
-  double theta = (Lr - Ll) / D;
-  theta_wa += theta;
+  double micro_theta = (Lr - Ll) / D;
+  theta_wa += micro_theta;
+  theta = theta_wa;
   double A = (Lr + Ll) / 2 * (1 - 0);
-  double dx = A * cos(theta_wa + theta / 2);
-  double dy = A * sin(theta_wa + theta / 2);
+  double dx = A * cos(theta_wa + micro_theta / 2);
+  double dy = A * sin(theta_wa + micro_theta / 2);
   double dd = sqrt(dx * dx + dy * dy);
 
   x += dx;

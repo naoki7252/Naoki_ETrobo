@@ -29,6 +29,7 @@ class Localize {
   void Update();
   void SaveOdometri();
   double distance_ = 0;
+  double theta = 0;
 
  private:
   MotorIo* motor_io_;
