@@ -83,6 +83,7 @@ void main_task(intptr_t unused) {
     tslp_tsk(100*1000U);
   }
   localize->SaveOdometri();
+  motor_io->Rotate();
   stp_cyc(EXEC_ACTION_CYC);
   stp_cyc(UPDATE_INFO_CYC);
   finalize();
@@ -90,7 +91,8 @@ void main_task(intptr_t unused) {
 }
 
 void exec_action_task(intptr_t unused) {
-  state_manager->Update();
+  // state_manager->Update();
+  // motor_io->Rotate();
   localize->Update();
   ext_tsk();
 }

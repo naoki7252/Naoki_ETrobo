@@ -47,9 +47,9 @@ void MotorIo::ResetCounts() {
   ev3_motor_reset_counts(EV3_PORT_C);
 }
 
-void MotorIo::TurnLeft() {
+void MotorIo::Rotate() {
   int turn_power = 50;
-  int turn_ratio = 50;
+  int turn_ratio = 100;
   ev3_motor_steer(EV3_PORT_B, EV3_PORT_C, turn_power, turn_ratio);
 }
 
