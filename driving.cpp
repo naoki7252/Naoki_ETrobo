@@ -119,6 +119,9 @@ void EndCondition::SetParam(End end_type, Color end_color, float end_threshold) 
 }
 
 bool EndCondition::IsSatisfied() {
+  // char str[264];
+  // sprintf(str, "theta: %d\n", localize_->theta);
+  // syslog(LOG_NOTICE, str);
   switch (end_type_) {
     case kColorEnd:
       if (end_color_ == luminous_->color_)

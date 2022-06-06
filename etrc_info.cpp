@@ -96,7 +96,7 @@ void Localize::Update() {
 
   double micro_theta = (Lr - Ll) / D;
   theta_wa += micro_theta;
-  theta = theta_wa;
+  theta = counts_r_;
   double A = (Lr + Ll) / 2 * (1 - 0);
   double dx = A * cos(theta_wa + micro_theta / 2);
   double dy = A * sin(theta_wa + micro_theta / 2);
@@ -105,9 +105,10 @@ void Localize::Update() {
   x += dx;
   y += dy;
   distance_ += dd;
+  distance_right += A;
 
   char str[264];
-  sprintf(str, "x: %f y: %f distance: %f\n", x, y, distance_);
+  sprintf(str, "x: %f y: %f distance: %f distance_right: %f theta_wa:%f\n", x, y, distance_, distance_right, theta_wa);
   syslog(LOG_NOTICE, str);
 }
 
