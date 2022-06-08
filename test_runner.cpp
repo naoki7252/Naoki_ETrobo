@@ -2,7 +2,8 @@
 
 const int kTtestRunParamsNum = 2;
 const DrivingParam kTestRunParams[kTtestRunParamsNum] = {
-  { kGoForward, 50, {}, kDistanceEnd, kInvalidColor, 1000000, false},
+  { kTraceRightEdge, 42, { 0.38, 0, 0 }, kDistanceEnd, kInvalidColor, 10000000, false},
+  // { kGoForward, 50, {}, kDistanceEnd, kInvalidColor, 1000000, false},
   // { kRotateLeft, 45, {}, kThetaEnd, kInvalidColor, 90, false},
   { kStopWheels, 0, { 0, 0, 0 }, kInvalidEnd, kInvalidColor, 0, false},
 };

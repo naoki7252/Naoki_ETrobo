@@ -90,6 +90,8 @@ void Localize::Update() {
   curr_index += 1;
   counts_rs[curr_index] = counts_r_;
   counts_ls[curr_index] = counts_l_;
+  locate_x[curr_index] = x;
+  locate_y[curr_index] = y;
 
   double Ll = R * (counts_ls[curr_index] - counts_ls[curr_index - 1]) * M_PI / 180;
   double Lr = R * (counts_rs[curr_index] - counts_rs[curr_index - 1]) * M_PI / 180;
@@ -107,15 +109,19 @@ void Localize::Update() {
   distance_ += dd;
   distance_right += A;
 
-  char str[264];
+   char str[264];
   sprintf(str, "x: %f y: %f distance: %f distance_right: %f theta_wa:%f\n", x, y, distance_, distance_right, theta_wa);
-  syslog(LOG_NOTICE, str);
+  syslog(LOG_NOTICE, str); 
 }
 
-void Localize::SaveOdometri() {
+ void Localize::SaveOdometri() {
   char str [256];
   FILE* fp = fopen("Odome.csv", "w");
 
+  // for (int i=0; i<curr_index; i++) {
+  //   sprintf(str, "%f, %f\n", locate_x[i], locate_y[i]);
+  //   fprintf(fp, str);
+  // }
   for (int i=0; i<curr_index; i++) {
     sprintf(str, "%d, %d\n", counts_ls[i], counts_rs[i]);
     fprintf(fp, str);
@@ -123,3 +129,4 @@ void Localize::SaveOdometri() {
 
   fclose(fp);
 }
+ 

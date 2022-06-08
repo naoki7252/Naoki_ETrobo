@@ -36,6 +36,8 @@ class Localize {
   MotorIo* motor_io_;
   int32_t counts_rs[100000] = {};
   int32_t counts_ls[100000] = {};
+  float locate_x[100000] = {};
+  float locate_y[100000] = {};
   int curr_index = 0;
   const float R = 49.75;
   const int8_t D = 128;
