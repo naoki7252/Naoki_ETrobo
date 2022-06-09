@@ -96,6 +96,11 @@ void main_task(intptr_t unused) {
 }
 
 void exec_action_task(intptr_t unused) {
+lock_t now = clock();
+  // char str[264];
+  sprintf(str, "time: %f\n", (static_cast<double>(now-before_time))/CLOCKS_PER_SEC);
+  syslog(LOG_NOTICE, str);
+  before_time = now;
   state_manager->Update();
   // motor_io->Rotate();
   localize->Update();

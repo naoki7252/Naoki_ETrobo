@@ -1,6 +1,7 @@
 #include "etrc_info.h"
 
 #include <math.h>
+#include <time.h>
 
 #include "app.h"
 
@@ -79,6 +80,14 @@ Localize::Localize(MotorIo* motor_io)
 }
 
 void Localize::Update() {
+  
+  // clock_t now = clock();
+  // double a = (static_cast<double>(now-before_time))/CLOCKS_PER_SEC;
+  // // double keep += a;  
+  // sprintf(str, "time: %f sum: %f\n", (static_cast<double>(now-before_time))/CLOCKS_PER_SEC);
+  // syslog(LOG_NOTICE, str);
+  // before_time = now;
+  
   int32_t counts_r_ = motor_io_->counts_r_;
   int32_t counts_l_ = motor_io_->counts_l_;
 
@@ -109,9 +118,9 @@ void Localize::Update() {
   distance_ += dd;
   distance_right += A;
 
-   char str[264];
-  sprintf(str, "x: %f y: %f distance: %f distance_right: %f theta_wa:%f\n", x, y, distance_, distance_right, theta_wa);
-  syslog(LOG_NOTICE, str); 
+  //  char str[264];
+  // sprintf(str, "x: %f y: %f distance: %f distance_right: %f theta_wa:%f\n", x, y, distance_, distance_right, theta_wa);
+  // syslog(LOG_NOTICE, str); 
 }
 
  void Localize::SaveOdometri() {

@@ -4,6 +4,7 @@
 #include "ev3api.h"
 #include "info_type.h"
 #include "device_io.h"
+#include "time.h"
 
 class Luminous {
  public:
@@ -21,6 +22,7 @@ class Luminous {
   SensorIo* sensor_io_;
   Camera* camera_;
   Hsv color_ref_[kColorNum];
+  // clock_t before_time = 0;
 };
 
 class Localize {
@@ -44,6 +46,8 @@ class Localize {
   double theta_wa = 0;
   double x = 0;
   double y = 0;
+  clock_t before_time = 0;
+  char str[264];
 };
 
 #endif  // ETRC22_ETRC_INFO_H_
