@@ -40,6 +40,7 @@ class Localize {
   int32_t counts_ls[100000] = {};
   float locate_x[100000] = {};
   float locate_y[100000] = {};
+  unsigned long secs[100000] = {};
   int curr_index = 0;
   const float R = 49.75;
   const int8_t D = 128;
@@ -48,6 +49,7 @@ class Localize {
   double y = 0;
   clock_t before_time = 0;
   char str[264];
+  struct timespec now_time;
 };
 
 #endif  // ETRC22_ETRC_INFO_H_

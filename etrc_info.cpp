@@ -81,8 +81,21 @@ Localize::Localize(MotorIo* motor_io)
 
 void Localize::Update() {
   
+    // unsigned long sec;
+    // clock_gettime(CLOCK_REALTIME, &now_time);
+    // sec = now_time.tv_sec;
+    // secs[curr_index] = sec;
+    // curr_index += 1;
+
+    unsigned long nsec;
+    clock_gettime(CLOCK_REALTIME, &now_time);
+    nsec = now_time.tv_nsec;
+    secs[curr_index] = nsec;
+    curr_index += 1;
+    
+    // nsec = now_time.tv_nsec;
   // clock_t now = clock();
-  // double a = (static_cast<double>(now-before_time))/CLOCKS_PER_SEC;
+  // // double a = (static_cast<double>(now-before_time))/CLOCKS_PER_SEC;
   // // double keep += a;  
   // sprintf(str, "time: %f sum: %f\n", (static_cast<double>(now-before_time))/CLOCKS_PER_SEC);
   // syslog(LOG_NOTICE, str);
@@ -96,7 +109,7 @@ void Localize::Update() {
   //   counts_r_=0;
   // }
 
-  curr_index += 1;
+  // curr_index += 1;
   counts_rs[curr_index] = counts_r_;
   counts_ls[curr_index] = counts_l_;
   locate_x[curr_index] = x;
@@ -118,9 +131,9 @@ void Localize::Update() {
   distance_ += dd;
   distance_right += A;
 
-  //  char str[264];
-  // sprintf(str, "x: %f y: %f distance: %f distance_right: %f theta_wa:%f\n", x, y, distance_, distance_right, theta_wa);
-  // syslog(LOG_NOTICE, str); 
+   char str[264];
+  sprintf(str, "x: %f y: %f distance: %f distance_right: %f theta_wa:%f\n", x, y, distance_, distance_right, theta_wa);
+  syslog(LOG_NOTICE, str); 
 }
 
  void Localize::SaveOdometri() {
@@ -131,8 +144,14 @@ void Localize::Update() {
   //   sprintf(str, "%f, %f\n", locate_x[i], locate_y[i]);
   //   fprintf(fp, str);
   // }
+
+  // for (int i=0; i<curr_index; i++) {
+  //   sprintf(str, "%f, %f\n", counts_rs[i], counts_ls[i]);
+  //   fprintf(fp, str);
+  // }
+
   for (int i=0; i<curr_index; i++) {
-    sprintf(str, "%d, %d\n", counts_ls[i], counts_rs[i]);
+    sprintf(str, "%u\n", secs[i]);
     fprintf(fp, str);
   }
 
