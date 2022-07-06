@@ -1,4 +1,9 @@
+
+#include <list>
+
+#include <vector>
 #include "app.h"
+
 
 #include "device_io.h"
 #include "etrc_info.h"
@@ -6,6 +11,8 @@
 #include "test_runner.h"
 #include "game_play.h"
 #include "state_manager.h"
+
+// #include <vector>
 
 static const bool kLcourse = true;
 

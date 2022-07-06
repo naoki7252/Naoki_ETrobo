@@ -41,6 +41,7 @@ class Localize {
   float locate_x[100000] = {};
   float locate_y[100000] = {};
   unsigned long secs[100000] = {};
+  float theta_[100000] = {};
   int curr_index = 0;
   const float R = 49.75;
   const int8_t D = 128;

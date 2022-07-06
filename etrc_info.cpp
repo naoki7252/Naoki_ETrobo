@@ -87,12 +87,11 @@ void Localize::Update() {
     // secs[curr_index] = sec;
     // curr_index += 1;
 
-    unsigned long nsec;
-    clock_gettime(CLOCK_REALTIME, &now_time);
-    nsec = now_time.tv_nsec;
-    secs[curr_index] = nsec;
-    curr_index += 1;
-    
+    // unsigned long nsec;
+    // clock_gettime(CLOCK_REALTIME, &now_time);
+    // nsec = now_time.tv_nsec;
+    // secs[curr_index] = nsec;
+    // curr_index += 1;
     // nsec = now_time.tv_nsec;
   // clock_t now = clock();
   // // double a = (static_cast<double>(now-before_time))/CLOCKS_PER_SEC;
@@ -130,9 +129,20 @@ void Localize::Update() {
   y += dy;
   distance_ += dd;
   distance_right += A;
+  theta_[curr_index] = theta_wa;
 
-   char str[264];
-  sprintf(str, "x: %f y: %f distance: %f distance_right: %f theta_wa:%f\n", x, y, distance_, distance_right, theta_wa);
+  // theta_[curr_index] = micro_theta;
+
+  // char str[264];
+  // sprintf(str, "x: %f y: %f distance: %f distance_right: %f theta_wa:%f\n", x, y, distance_, distance_right, theta_wa);
+  // syslog(LOG_NOTICE, str);
+
+  // char str[264];
+  // sprintf(str, "theta: %f\n", micro_theta*180/M_PI);
+  // syslog(LOG_NOTICE, str);
+
+  char str[264];
+  sprintf(str, "theta: %f\n", theta_wa*180/M_PI);
   syslog(LOG_NOTICE, str); 
 }
 
@@ -150,10 +160,16 @@ void Localize::Update() {
   //   fprintf(fp, str);
   // }
 
-  for (int i=0; i<curr_index; i++) {
-    sprintf(str, "%u\n", secs[i]);
-    fprintf(fp, str);
-  }
+  //  for (int i=0; i<curr_index; i++) {
+  //    sprintf(str, "%u\n", secs[i]);
+  //    fprintf(fp, str);
+  //  }
+
+  //for (int i=0; i<curr_index; i++) {
+  //  sprintf(str, "%f\n", theta_[i]*180/M_PI);
+  //  fprintf(fp, str);
+  //}
+
 
   fclose(fp);
 }
