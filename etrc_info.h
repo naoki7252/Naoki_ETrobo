@@ -5,6 +5,9 @@
 #include "info_type.h"
 #include "device_io.h"
 #include "time.h"
+#include <vector>
+
+// #include "pursuit.h"
 
 class Luminous {
  public:
@@ -25,11 +28,48 @@ class Luminous {
   // clock_t before_time = 0;
 };
 
+class Pursuit {
+  public:
+    Pursuit(double initx, double inity, double inityaw, double innitv);
+    void Update(double v_,double delta);
+    double Calc_distance(double point_x, double point_y, int a);
+    double x, y, yaw, v;
+    double rear_x, rear_y;
+    std::vector<double>tx;
+    std::vector<double>ty;
+
+  private:
+    const int8_t lfc = 100; //先見る距離
+    const int8_t k = 1;
+    const float kp = 0.02; 
+    double  dt = 0.1;
+
+};
+
+class TargetCourse{
+  public:
+    TargetCourse(std::vector<double>x,std::vector<double>y);
+    std::tuple<int,double>search_target_index(Pursuit pursuit);
+    std::vector<double>cx;
+    std::vector<double>cy;
+    double distance_this_index;
+    double distance_next_index;  
+
+  private:    
+    const int8_t lfc = 100; 
+    const int8_t k = 1;
+    const float kp = 0.02; 
+    double  dt = 0.1;
+    int old_point_index;
+    int ind = 0;
+};
+
 class Localize {
  public:
   Localize(MotorIo* motor_io);
   void Update();
   void SaveOdometri();
+  void Trajectory();
   double distance_ = 0;
   double distance_right = 0;
   int32_t theta = 0;

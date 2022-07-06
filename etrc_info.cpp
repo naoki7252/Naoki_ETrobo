@@ -2,8 +2,19 @@
 
 #include <math.h>
 #include <time.h>
+#include <tuple>
+#include <vector>
+#include <algorithm>
+#include <climits>
 
 #include "app.h"
+
+// #include"pursuit.h"
+// #include"CubicSpline.h"
+// #include<iostream>
+// #include<string>
+// #include<fstream>
+// #include<sstream>
 
 Luminous::Luminous(SensorIo* sensor_io, Camera* camera)
     : color_(kInvalidColor), hsv_({0, 0, 0}), sensor_io_(sensor_io), camera_(camera) {
@@ -75,6 +86,132 @@ void Luminous::UpdateHsv() {
 void Luminous::UpdateColor() {
 }
 
+Pursuit::Pursuit(double initx, double inity, double inityaw, double initv) {
+    x = initx;
+    y = inity;
+    v = initv;
+    yaw = inityaw;
+}
+
+void Pursuit::Update(double v_, double alpha) {
+    x += v*cos(yaw)*dt;
+    y += v*sin(yaw)*dt;
+    v += v_*dt;
+    yaw = alpha;
+    tx.push_back(x);
+    ty.push_back(y);
+}
+
+double Pursuit::Calc_distance(double point_x, double point_y, int a){
+    double dx = x-point_x;
+    double dy = y-point_y;
+/*
+    std::cout<<"X:"<<point_x<<std::endl;
+    std::cout<<"Y:"<<point_y<<std::endl;
+    std::cout<<"a:"<<a<<std::endl;
+    std::cout<<" "<<std::endl;
+    */
+    return hypot(dx, dy);
+}
+
+TargetCourse::TargetCourse(std::vector<double>x, std::vector<double>y){
+    for(int i=0; i<y.size(); i++){
+        cx.push_back(x[i]);
+        cy.push_back(y[i]);
+    }
+    old_point_index = INT_MAX;
+    //std::cout<<"constractor";
+}
+
+std::tuple<int,double>TargetCourse::search_target_index(Pursuit pursuit){
+    //最短点を探す
+   if(old_point_index==INT_MAX){
+        double dx;
+        double dy;
+        std::vector<int>d;
+
+        for(int i=0;i<cx.size();i++){
+            dx = pursuit.x-cx[i];
+            dy = pursuit.y-cy[i];
+            d.push_back(hypot(dx, dy));
+        }
+        std::vector<int>::iterator minIt=std::min_element(d.begin(), d.end());
+        ind=std::distance(d.begin(), minIt);
+
+        old_point_index=ind;
+
+    } 
+
+   
+    else{
+       ind=old_point_index;
+       distance_this_index=pursuit.Calc_distance(cx[ind], cy[ind], 1); 
+
+       while(true){
+
+            distance_next_index=pursuit.Calc_distance(cx[ind+1], cy[ind+1], 2);
+            if(distance_this_index<distance_next_index)break;
+            
+            if(ind+1<cx.size()){
+                ind++;
+            }
+            else{
+                ind=ind;
+            }
+            distance_this_index = distance_next_index;
+        }
+        old_point_index=ind;
+    }
+    
+
+    double lf=k*pursuit.v+lfc;
+    
+    while(lf>pursuit.Calc_distance(cx[ind], cy[ind], 4)){
+        if(ind+1>=cx.size())break;
+        ind+=1;
+    }
+    
+    return std::forward_as_tuple(ind, lf);
+}
+
+double speed_control(double target, double current){
+    // double speed=kp*(target-current);
+    // return speed;
+}
+
+std::tuple<int, double> pursuit_control(Pursuit pursuit, TargetCourse& trajectory, int pind){
+
+    int  Ind;
+    double lf;
+    std::tie(Ind, lf)=trajectory.search_target_index(pursuit);
+
+
+    double tx,ty;
+
+    if(pind>=Ind){
+        Ind=pind;
+
+    }
+    
+    if(Ind<trajectory.cx.size()){
+        tx=trajectory.cx[Ind];    
+        ty=trajectory.cy[Ind];    
+    }
+    if(Ind>trajectory.cx.size()){
+        tx=trajectory.cx[trajectory.cx.size()-1];
+        ty=trajectory.cy[trajectory.cy.size()-1];
+        Ind=trajectory.cx.size()-1;
+    }
+
+    double alpha=atan2(ty-pursuit.y, tx-pursuit.x);
+  //  double delta=atan2(2.0*WB*sin(alpha)/lf,1.0);
+  //  double dist=hypot(tx,ty);
+    
+   // double relx=dist*cos(alpha);
+   // double rely=dist*sin(alpha);
+    return std::forward_as_tuple(Ind, alpha);
+}
+
 Localize::Localize(MotorIo* motor_io)
     : motor_io_(motor_io) {
 }
@@ -144,6 +281,11 @@ void Localize::Update() {
   char str[264];
   sprintf(str, "theta: %f\n", theta_wa*180/M_PI);
   syslog(LOG_NOTICE, str); 
+}
+
+void Localize::Trajectory(){
+
+
 }
 
  void Localize::SaveOdometri() {

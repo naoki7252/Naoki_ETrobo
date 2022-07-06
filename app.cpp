@@ -20,6 +20,7 @@ MotorIo* motor_io;
 SensorIo* sensor_io;
 Camera* camera;
 Luminous* luminous;
+// Pursuit* pursuit;
 Localize* localize;
 WheelsControl* wheels_control;
 BasicDriver* basic_driver;
@@ -37,6 +38,7 @@ static void initialize() {
   sensor_io = new SensorIo();
   camera = new Camera();
   luminous = new Luminous(sensor_io, camera);
+  // pursuit = new Pursuit();
   localize = new Localize(motor_io);
   wheels_control = new WheelsControl(motor_io);
   basic_driver = new BasicDriver(wheels_control);
