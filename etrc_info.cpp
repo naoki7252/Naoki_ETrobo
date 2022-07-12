@@ -1,20 +1,18 @@
 #include "etrc_info.h"
 
-#include <math.h>
-#include <time.h>
-#include <tuple>
-#include <vector>
-#include <algorithm>
-#include <climits>
-
+#include<vector>
+// #include<math.h>
+// #include<iostream>
+#include<string>
+#include<fstream>
+#include<sstream>
+#include<stdio.h>
+// #include<algorithm>
+// #include<tuple>
+// #include<climits>
 #include "app.h"
 
-// #include"pursuit.h"
 // #include"CubicSpline.h"
-// #include<iostream>
-// #include<string>
-// #include<fstream>
-// #include<sstream>
 
 Luminous::Luminous(SensorIo* sensor_io, Camera* camera)
     : color_(kInvalidColor), hsv_({0, 0, 0}), sensor_io_(sensor_io), camera_(camera) {
@@ -86,130 +84,123 @@ void Luminous::UpdateHsv() {
 void Luminous::UpdateColor() {
 }
 
-Pursuit::Pursuit(double initx, double inity, double inityaw, double initv) {
+Pstate::Pstate(double initx, double inity, double inityaw){
     x = initx;
     y = inity;
-    v = initv;
     yaw = inityaw;
 }
 
-void Pursuit::Update(double v_, double alpha) {
-    x += v*cos(yaw)*dt;
-    y += v*sin(yaw)*dt;
-    v += v_*dt;
-    yaw = alpha;
+void Pstate::update(double x_, double y_){//現在の推定位置
+    x = x_;
+    y = y_;
     tx.push_back(x);
     ty.push_back(y);
 }
 
-double Pursuit::Calc_distance(double point_x, double point_y, int a){
-    double dx = x-point_x;
-    double dy = y-point_y;
-/*
-    std::cout<<"X:"<<point_x<<std::endl;
-    std::cout<<"Y:"<<point_y<<std::endl;
-    std::cout<<"a:"<<a<<std::endl;
-    std::cout<<" "<<std::endl;
-    */
-    return hypot(dx, dy);
+double Pstate::calc_distance(double point_x, double point_y){
+    double dx = x - point_x;
+    double dy = y - point_y;
+    return hypot(dx,dy);
 }
+
+// State state(300.0, 1100.0, M_PI/2 );//初期位置 x, y, 姿勢
+
 
 TargetCourse::TargetCourse(std::vector<double>x, std::vector<double>y){
     for(int i=0; i<y.size(); i++){
         cx.push_back(x[i]);
         cy.push_back(y[i]);
     }
-    old_point_index = INT_MAX;
-    //std::cout<<"constractor";
+    old_point_index = INT_MAX; //最初と次の目標点を識別するため
 }
 
-std::tuple<int,double>TargetCourse::search_target_index(Pursuit pursuit){
+std::tuple<int, double>TargetCourse::search_target_index(Pstate pstate){
     //最短点を探す
-   if(old_point_index==INT_MAX){
+    if(old_point_index == INT_MAX){//最初 初期位置から最も近い座標の探索
         double dx;
         double dy;
         std::vector<int>d;
 
-        for(int i=0;i<cx.size();i++){
-            dx = pursuit.x-cx[i];
-            dy = pursuit.y-cy[i];
+        for(int i=0; i<cx.size(); i++){
+            dx = pstate.x-cx[i];//最初の座標と目標点の差
+            dy = pstate.y-cy[i];
             d.push_back(hypot(dx, dy));
         }
-        std::vector<int>::iterator minIt=std::min_element(d.begin(), d.end());
-        ind=std::distance(d.begin(), minIt);
-
-        old_point_index=ind;
-
+        std::vector<int>::iterator minIt = std::min_element(d.begin(), d.end());//1番近い距離を探索
+        ind = std::distance(d.begin(), minIt); //最小値の場所
+        old_point_index = ind;
     } 
-
-   
+    
     else{
-       ind=old_point_index;
-       distance_this_index=pursuit.Calc_distance(cx[ind], cy[ind], 1); 
+        ind = old_point_index;
+        distance_this_index = pstate.calc_distance(cx[ind], cy[ind]);//現在の座標と目標点との距離 
 
-       while(true){
-
-            distance_next_index=pursuit.Calc_distance(cx[ind+1], cy[ind+1], 2);
-            if(distance_this_index<distance_next_index)break;
+        while(true){
+            distance_next_index = pstate.calc_distance(cx[ind+1], cy[ind+1]);//次の目標点との距離
+            if(distance_this_index < distance_next_index)break;
             
-            if(ind+1<cx.size()){
-                ind++;
-            }
-            else{
-                ind=ind;
-            }
+            if(ind+1 < cx.size()) ind++;
+            else ind=ind;
+            
             distance_this_index = distance_next_index;
         }
         old_point_index=ind;
     }
-    
 
-    double lf=k*pursuit.v+lfc;
-    
-    while(lf>pursuit.Calc_distance(cx[ind], cy[ind], 4)){
-        if(ind+1>=cx.size())break;
-        ind+=1;
+    while(lf > pstate.calc_distance(cx[ind], cy[ind])){//目標点がlfより小さければ次の目標点
+        if(ind+1 >= cx.size()) break;
+        ind += 1;
     }
     
     return std::forward_as_tuple(ind, lf);
 }
 
-double speed_control(double target, double current){
-    // double speed=kp*(target-current);
-    // return speed;
+Pursuit::Pursuit(){}
+
+// void Pursuit::pursuit_course(std::vector<double> course, std::string input_csv_file_path){
+//   std::string str_buf;
+//   std::string str_conma_buf;
+//   std::ifstream input_csv_file(input_csv_file_path);
+//   while (getline(ifs_csv_file, str_buf)) { 
+//     std::istringstream i_stream(str_buf);
+//     while (getline(i_stream, str_conma_buf, ',')) {
+//     double pre = stod(str_conma_buf);
+//     course.push_back(pre);
+//     }
+//   }
+// }
+
+std::tuple<int, double>Pursuit::pursuit_control(Pstate pstate, TargetCourse& trajectory, int pind){
+    //pind 目標点
+    //戻り値がjntとdouble
+    std::tie(Ind, lf) = trajectory.search_target_index(pstate); //目標点と見る距離
+    if(pind >= Ind) Ind = pind;// 目標点
+
+    if(Ind < trajectory.cx.size()){
+        tx = trajectory.cx[Ind];    
+        ty = trajectory.cy[Ind];    
+    }
+
+    if(Ind > trajectory.cx.size()){
+        tx = trajectory.cx[trajectory.cx.size()-1];
+        ty = trajectory.cy[trajectory.cy.size()-1];
+        Ind = trajectory.cx.size()-1;
+    }
+
+    double alpha = atan2(ty-pstate.y, tx-pstate.x);//目標点と現在の座標の差から方位角[rad]を算出
+    return std::forward_as_tuple(Ind, alpha);//目標点と方位角
 }
 
-std::tuple<int, double> pursuit_control(Pursuit pursuit, TargetCourse& trajectory, int pind){
-
-    int  Ind;
-    double lf;
-    std::tie(Ind, lf)=trajectory.search_target_index(pursuit);
-
-
-    double tx,ty;
-
-    if(pind>=Ind){
-        Ind=pind;
-
+void Pursuit::pursuit_update(std::vector<double>rx, std::vector<double>ry, double init[3]){
+    Pstate pstate(init[0], init[1], init[2]);
+    lastindex = rx.size()-1;
+    TargetCourse target_couse(rx, ry);//create course
+    std::tie(target_ind, lf_m) = target_couse.search_target_index(pstate); //init state tie複数の引数 最初の目標点
+    while(T >= Time && lastindex > target_ind){ //Timeは速度が分かったら時間に変更
+        std::tie(target_ind, delta) = pursuit_control(pstate, target_couse, target_ind); //最初以降の目標点
+        pstate.update(speed, delta); //ここに自己位置推定したx, y座標
+        Time += dt;
     }
-    
-    if(Ind<trajectory.cx.size()){
-        tx=trajectory.cx[Ind];    
-        ty=trajectory.cy[Ind];    
-    }
-    if(Ind>trajectory.cx.size()){
-        tx=trajectory.cx[trajectory.cx.size()-1];
-        ty=trajectory.cy[trajectory.cy.size()-1];
-        Ind=trajectory.cx.size()-1;
-    }
-
-    double alpha=atan2(ty-pursuit.y, tx-pursuit.x);
-  //  double delta=atan2(2.0*WB*sin(alpha)/lf,1.0);
-  //  double dist=hypot(tx,ty);
-    
-   // double relx=dist*cos(alpha);
-   // double rely=dist*sin(alpha);
-    return std::forward_as_tuple(Ind, alpha);
 }
 
 Localize::Localize(MotorIo* motor_io)
@@ -281,11 +272,6 @@ void Localize::Update() {
   char str[264];
   sprintf(str, "theta: %f\n", theta_wa*180/M_PI);
   syslog(LOG_NOTICE, str); 
-}
-
-void Localize::Trajectory(){
-
-
 }
 
  void Localize::SaveOdometri() {

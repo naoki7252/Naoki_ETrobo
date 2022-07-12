@@ -1,13 +1,19 @@
 #ifndef ETRC22_ETRC_INFO_H_
 #define ETRC22_ETRC_INFO_H_
 
+
+#include <vector>
 #include "ev3api.h"
 #include "info_type.h"
 #include "device_io.h"
 #include "time.h"
-#include <vector>
+#include<math.h>
+// #include<iostream>
+#include<stdio.h>
+#include<algorithm>
+#include<tuple>
+#include<climits>
 
-// #include "pursuit.h"
 
 class Luminous {
  public:
@@ -28,40 +34,53 @@ class Luminous {
   // clock_t before_time = 0;
 };
 
-class Pursuit {
-  public:
-    Pursuit(double initx, double inity, double inityaw, double innitv);
-    void Update(double v_,double delta);
-    double Calc_distance(double point_x, double point_y, int a);
-    double x, y, yaw, v;
-    double rear_x, rear_y;
-    std::vector<double>tx;
-    std::vector<double>ty;
+class Pstate{//機体の状態
+    public:
+        Pstate(double initx, double inity, double inityaw);
+        void update(double x_, double y_);
+        double calc_distance(double point_x, double point_y);
+        double x, y, yaw;
+        double rear_x, rear_y;
+        std::vector<double>tx; //現在のx座標
+        std::vector<double>ty; //現在のy座標
+};
 
-  private:
-    const int8_t lfc = 100; //先見る距離
-    const int8_t k = 1;
-    const float kp = 0.02; 
-    double  dt = 0.1;
+class TargetCourse{//次の目標点の算出
+    public:
+        TargetCourse(std::vector<double>x, std::vector<double>y);
+        std::tuple<int, double>search_target_index(Pstate pstate);
+        std::vector<double>cx; //目標点のx座標
+        std::vector<double>cy; //目標点のy座標
+        double distance_this_index;
+        double distance_next_index;    
+        double lf = 50;//先見る距離
+    private:    
+        int old_point_index;
+        int ind = 0;
 
 };
 
-class TargetCourse{
-  public:
-    TargetCourse(std::vector<double>x,std::vector<double>y);
-    std::tuple<int,double>search_target_index(Pursuit pursuit);
-    std::vector<double>cx;
-    std::vector<double>cy;
-    double distance_this_index;
-    double distance_next_index;  
+class Pursuit{
+    public:
+        Pursuit();
+        // std::vector<double>rx;//仮想軌道のx座標 
+        // std::vector<double>ry;//仮想軌道のy座標 
+        void pursuit_course(std::vector<double> course, std::string input_csv_file_path);
+        std::tuple<int, double> pursuit_control(Pstate pstate, TargetCourse& trajectory, int pind);
+        void pursuit_update(std::vector<double>rx, std::vector<double>ry, double init[3]);
+        
+        double lastindex;
 
-  private:    
-    const int8_t lfc = 100; 
-    const int8_t k = 1;
-    const float kp = 0.02; 
-    double  dt = 0.1;
-    int old_point_index;
-    int ind = 0;
+    private:
+        int  Ind;
+        double lf;
+        double tx, ty;
+        double T = 1300;//実機
+        double Time = 0;//実機
+        double lf_m;//先見る距離
+        int target_ind;
+        double speed, delta;
+        double dt = 0.1;
 };
 
 class Localize {
@@ -69,7 +88,6 @@ class Localize {
   Localize(MotorIo* motor_io);
   void Update();
   void SaveOdometri();
-  void Trajectory();
   double distance_ = 0;
   double distance_right = 0;
   int32_t theta = 0;
